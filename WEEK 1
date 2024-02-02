@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int CLASS_SIZE = 3;
+const float WEIGHT_DIFFERENCE_THRESHOLD = 2.5;
+
+// Function to validate weight entry
+float validateWeight() {
+    float weight;
+    cout << "Enter the weight in kilograms: ";
+    cin >> weight;
+
+    if (weight > 0) {
+        return weight;
+    } else {
+        cout << "Invalid weight. Weight must be positive." << endl;
+        return validateWeight();
+    }
+}
+
+int main() {
+    float weights[CLASS_SIZE];
+    float weightDifferences[CLASS_SIZE];
+    string names[CLASS_SIZE];
+
+    // Input and store 
+    for (int i = 0; i < CLASS_SIZE; ++i) 
+    {
+        cout << "Enter the name of pupil " << i + 1 << ": ";
+        cin >> names[i];
+        weights[i] = validateWeight();
+        cout <<"Last Day Weight" <<endl;
+        float lastDayWeight = validateWeight();
+
+        weightDifferences[i] = lastDayWeight - weights[i];
+
+        // Output details for pupils with more than 2.5 kg difference
+        if (abs(weightDifferences[i]) > WEIGHT_DIFFERENCE_THRESHOLD) 
+        {
+            cout << "Pupil: " << names[i] << ", Difference: " << abs(weightDifferences[i]) << " kg, ";
+            cout << (weightDifferences[i] > 0 ? "Rise" : "Fall") << endl;
+        }
+    }
+
+    return 0;
+}
