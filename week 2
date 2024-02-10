@@ -1,0 +1,48 @@
+# Task 1
+
+MIN_SENIORS = 10
+MAX_SENIORS = 36
+MIN_CARERS = 2
+ADDITIONAL_CARERS_THRESHOLD = 24
+HIRE_OF_COACH = {range(12, 17): 150, range(17, 27): 190, range(27, 40): 225}
+COST_OF_MEAL = {range(12, 17): 14.00, range(17, 27): 13.50, range(27, 40): 13.00}
+COST_OF_THEATRE_TICKET = {range(12, 17): 21.00, range(17, 27): 20.00, range(27, 40): 19.00}
+
+def calculate_total_cost(num_seniors):
+    if not MIN_SENIORS <= num_seniors <= MAX_SENIORS:
+        return "Error: Invalid number of seniors. Please enter a number between 10 and 36."
+    
+    num_carers = MIN_CARERS + (1 if num_seniors > ADDITIONAL_CARERS_THRESHOLD else 0)
+    total_cost = HIRE_OF_COACH[range(12, 17)] + COST_OF_MEAL[range(12, 17)] + COST_OF_THEATRE_TICKET[range(12, 17)]
+    cost_per_person = total_cost / (num_seniors + num_carers)
+    return f"Total cost: ${total_cost:.2f}\nCost per person: ${cost_per_person:.2f}"
+num_seniors = int(input("Enter the number of seniors interested in the outing: "))
+print(calculate_total_cost(num_seniors))
+
+
+# Task 2
+
+people_on_outing = []
+amount_paid = []
+
+# Function to record names and payments
+def record_outing():
+    num_seniors = int(input("Enter the number of seniors interested in the outing: "))
+    for i in range(num_seniors):
+        name = input(f"Enter the name of senior {i+1}: ")
+        people_on_outing.append(name)
+        payment = float(input(f"Enter the amount paid by {name}: $"))
+        amount_paid.append(payment)
+record_outing()
+
+# total amount
+total_collected = sum(amount_paid)
+
+# output
+print("\nList of people on the outing and amount paid:")
+for i in range(len(people_on_outing)):
+    print(f"{people_on_outing[i]} - ${amount_paid[i]:.2f}")
+print(f"\nTotal amount collected: ${total_collected:.2f}")
+
+# Task 3
+
