@@ -1,0 +1,112 @@
+class AuctionItem:
+    def __init__(self, item_number, description, reserve_price):
+        self.item_number = item_number
+        self.description = description
+        self.reserve_price = reserve_price
+        self.bids = []
+        self.sold = False
+
+    def add_bid(self, bid):
+        if bid > self.get_highest_bid():
+            self.bids.append(bid)
+            return True
+        else:
+            return False
+
+    def get_highest_bid(self):
+        if self.bids:
+            return max(self.bids)
+        else:
+            return 0
+
+    def mark_as_sold(self):
+        self.sold = True
+
+    def get_fee(self):
+        return self.get_highest_bid() * 0.1
+
+    def __str__(self):
+        return f"Item {self.item_number}: {self.description} - Reserve Price: {self.reserve_price} - Bids: {self.bids} - Sold: {self.sold}"
+
+
+class Auction:
+    def __init__(self):
+        self.items = []
+        self.sold_items = []
+        self.unsold_items = []
+        self.fee = 0
+
+    def add_item(self, item):
+        self.items.append(item)
+
+    def find_item(self, item_number):
+        for item in self.items:
+            if item.item_number == item_number:
+                return item
+        return None
+
+    def place_bid(self, buyer_number, item_number, bid):
+        item = self.find_item(item_number)
+        if item:
+            if item.add_bid(bid):
+                print(f"Bid of {bid} placed successfully for item {item_number}")
+            else:
+                print(f"Bid of {bid} not placed. Bid must be higher than any existing bids.")
+        else:
+            print(f"Item {item_number} not found.")
+
+    def end_auction(self):
+        for item in self.items:
+            if item.get_highest_bid() >= item.reserve_price:
+                item.mark_as_sold()
+                self.sold_items.append(item)
+                self.fee += item.get_fee()
+            else:
+                self.unsold_items.append(item)
+
+    def display_results(self):
+        print("\nAuction Results:")
+        print(f"Total Fee: {self.fee}")
+        print(f"Number of sold items: {len(self.sold_items)}")
+        print(f"Number of unsold items: {len(self.unsold_items)}")
+        print(f"Number of items with no bids: {len(self.items) - len(self.sold_items) - len(self.unsold_items)}")
+        print("\nSold Items:")
+        for item in self.sold_items:
+            print(f"Item {item.item_number} - Final Bid: {item.get_highest_bid()}")
+        print("\nUnsold Items:")
+        for item in self.unsold_items:
+            print(f"Item {item.item_number} - No bids")
+
+
+def main():
+    auction = Auction()
+    while True:
+        print("\nAuction Menu:")
+        print("1. Add Item")
+        print("2. Place Bid")
+        print("3. End Auction")
+        print("4. Display Results")
+        print("5. Exit")
+        choice = int(input("Enter your choice: "))
+        if choice == 1:
+            item_number = int(input("Enter item number: "))
+            description = input("Enter item description: ")
+            reserve_price = float(input("Enter reserve price: "))
+            auction.add_item(AuctionItem(item_number, description, reserve_price))
+        elif choice == 2:
+            buyer_number = int(input("Enter bu`yer number: "))
+            item_number = int(input("Enter item number: "))
+            bid = float(input("Enter bid: "))
+            auction.place_bid(buyer_number, item_number, bid)
+        elif choice == 3:
+            auction.end_auction()
+        elif choice == 4:
+            auction.display_results()
+        elif choice == 5:
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+
+if __name__ == "__main__":
+    main()
