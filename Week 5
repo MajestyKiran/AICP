@@ -1,0 +1,90 @@
+import re
+
+def is_valid_day(day):
+    """Check if the day is one of the seven days of the week."""
+    return day.lower() in ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+
+def is_valid_hour(hour):
+    """Check if the hour is between 0 and 23."""
+    return 0 <= hour <= 23
+
+def is_valid_parking_time(time):
+    """Check if the parking time is a positive whole number."""
+    return time.isdigit() and int(time) > 0
+
+def is_valid_payment(payment):
+    """Check if the payment is a positive whole number."""
+    return payment.isdigit() and int(payment) >= 0
+
+def calculate_check_digit(number):
+    """Calculate the check digit for a frequent parking number."""
+    if len(number) != 5:
+        return None
+    total = 0
+    for i, digit in enumerate(number[:-1]):
+        if i % 2 == 0:
+            total += int(digit)
+        else:
+            total += int(digit) * 2
+    total %= 11
+    return str(total) if total != 10 else '0'
+
+def calculate_price(day, hour, parking_time, frequent_parking_number=None):
+    """Calculate the price to park."""
+    prices = {
+        'Sunday': 2,
+        'Monday': 10,
+        'Tuesday': 10,
+        'Wednesday': 10,
+        'Thursday': 10,
+        'Friday': 10,
+        'Saturday': 3,
+    }
+    price_per_hour = prices[day.capitalize()]
+    if int(hour) < 16:
+        total_price = price_per_hour * int(parking_time)
+    else:
+        total_price = price_per_hour * (int(parking_time) - 1)
+    if frequent_parking_number and calculate_check_digit(frequent_parking_number) == frequent_parking_number[-1]:
+        if int(hour) >= 16:
+            total_price *= 0.5
+        else:
+            total_price *= 0.9
+    return total_price
+
+def main():
+    global daily_total
+    daily_total = 0
+    day = input('Enter the day of the week: ')
+    while not is_valid_day(day):
+        print('Invalid day. Please try again.')
+        day = input('Enter the day of the week: ')
+
+    hour = input('Enter the hour of arrival (0-23): ')
+    while not is_valid_hour(int(hour)):
+        print('Invalid hour. Please try again.')
+        hour = input('Enter the hour of arrival (0-23): ')
+
+    while True:
+        parking_time = input('Enter the number of hours to park: ')
+        if is_valid_parking_time(parking_time):
+            break
+        print('Invalid parking time. Please try again.')
+
+    while True:
+        frequent_parking_number = input('Enter your frequent parking number (if available): ')
+        if len(frequent_parking_number) == 5 or len(frequent_parking_number) == 0:
+            break
+        print('Invalid frequent parking number. Please try again.')
+
+    payment = input('Enter the amount paid: ')
+    while not is_valid_payment(payment):
+        print('Invalid payment. Please try again.')
+        payment = input('Enter the amount paid: ')
+
+    total_price = calculate_price(day, hour, parking_time, frequent_parking_number)
+    if int(payment) < total_price:
+        print(f'The payment amount is less than the calculated price of ${total_price}.')
+    elif int(payment) > total_price:
+        print(f'The payment amount is greater than the calculated price of ${total_price}.')
+    daily_total +=
